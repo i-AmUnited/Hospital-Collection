@@ -1,0 +1,14 @@
+@font-face {
+  font-family: montserrat;
+  src: url("../src/assets//font/Montserrat-VariableFont_wght.ttf");
+}
+@import 'tailwindcss';
+
+
+
+@theme{
+  --color-primary: #029834;
+  --color-lightGray: #c4c4c4;
+
+  --font-montserrat: montserrat, "sans-serif"
+}
