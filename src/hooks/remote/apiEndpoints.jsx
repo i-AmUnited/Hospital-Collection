@@ -1,5 +1,5 @@
 import { showErrorMessage } from "../constants";
-import { apiClient } from "./apiClients";
+import { apiClient, apiClientWithToken } from "./apiClients";
 
 export class apiEndPoints {
   static extractError(error) {
@@ -58,9 +58,45 @@ export class apiEndPoints {
     }
   }
 
-  static async dashboard(data) {
+  static async dashboard() {
     try {
-      return apiClient.get("/dashboard", data);
+      return apiClientWithToken.get("/dashboard");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async collections() {
+    try {
+      return apiClientWithToken.get("/webhook/notifications");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async listUsers() {
+    try {
+      return apiClientWithToken.get("/users");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateUser(userID) {
+    try {
+      return apiClientWithToken.patch(`/users/${userID}`);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async listRoles() {
+    try {
+      return apiClientWithToken.get("/roles/get-all-roles");
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;

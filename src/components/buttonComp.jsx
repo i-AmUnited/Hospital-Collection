@@ -1,6 +1,6 @@
 const ButtonComp = ({buttonText, loading,}) => {
     return ( 
-        <button type="submit" disabled={loading} className="cursor-pointer py-4 px-8 rounded bg-primary text-xs text-white font-semibold"> 
+        <button type="submit" disabled={loading} className="cursor-pointer py-4 px-8 rounded bg-primary text-xs text-white"> 
               {loading ? 
               <div className="flex items-end">
                 loading...

@@ -1,6 +1,7 @@
 @font-face {
   font-family: montserrat;
   src: url("../src/assets//font/Montserrat-VariableFont_wght.ttf");
+  font-weight: 500
 }
 @import 'tailwindcss';
 

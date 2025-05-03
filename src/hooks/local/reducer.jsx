@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { apiEndPoints } from "../remote/apiEndpoints";
-import { showErrorMessage, retrieveFromLocalStorage } from "../constants";
+import { showErrorMessage, retrieveFromLocalStorage, APP_SECRET_KEY } from "../constants";
+import CryptoJS from "crypto-js";
 
 const initialState = {
   users: null,
@@ -11,7 +12,8 @@ const initialState = {
 };
 
 const saveToLocalStorage = (key, data) => {
-  localStorage.setItem(key, data);
+  const encryptedData = CryptoJS.AES.encrypt(data, APP_SECRET_KEY).toString();
+  localStorage.setItem(key, encryptedData);
 };
 
 export const userSignIn = createAsyncThunk("user/signIn",
@@ -83,17 +85,82 @@ export const resetPassword = createAsyncThunk(
 
 export const dashboardStats = createAsyncThunk(
   "user/dashboardStats",
-  async (values) => {
+  async () => {
     try {
       const dashboardStatsEndPoint =
-        await apiEndPoints.dashboard(values);
+        await apiEndPoints.dashboard();
       const response = await dashboardStatsEndPoint.data;
+      // console.log(response)
       return response;
     } catch (error) {
       return error.response.data;
     }
   }
 );
+
+export const usersList = createAsyncThunk(
+  "user/usersList",
+  async () => {
+    try {
+      const usersEndpoint =
+        await apiEndPoints.listUsers();
+      const response = await usersEndpoint.data;
+      // console.log(response, "akdfjlkjdfs")
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
+export const roles = createAsyncThunk(
+  "user/listRoles",
+  async () => {
+    try {
+      const rolesEndpoint =
+        await apiEndPoints.listRoles();
+      const response = await rolesEndpoint.data;
+      // console.log(response, "akdfjlkjdfs")
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
+export const manageUser = createAsyncThunk(
+  "user/updateUser",
+  async (userID) => {
+    try {
+      const manageUserEndpoint =
+        await apiEndPoints.updateUser(userID);
+      const response = await manageUserEndpoint.data;
+      // console.log(response, "akdfjlkjdfs")
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
+export const listCollections = createAsyncThunk(
+  "user/collections",
+  async () => {
+    try {
+      const collectionsEndPoint =
+        await apiEndPoints.collections();
+      const response = await collectionsEndPoint.data;
+      // console.log(response)
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
+
+
+
 
 
 const slice = createSlice({
@@ -132,6 +199,10 @@ const slice = createSlice({
           forgotPassword.fulfilled,
           resetPassword.fulfilled,
           dashboardStats.fulfilled,
+          listCollections.fulfilled,
+          usersList.fulfilled,
+          manageUser.fulfilled,
+          roles.fulfilled,
         ),
         (state, action) => {
           state.loading = false;
@@ -166,6 +237,10 @@ const slice = createSlice({
         forgotPassword.pending,
         resetPassword.pending,
         dashboardStats.pending,
+        listCollections.pending,
+        usersList.pending,
+        manageUser.pending,
+        roles.pending,
         ),
         (state) => {
           state.loading = true;
@@ -180,6 +255,10 @@ const slice = createSlice({
         forgotPassword.rejected,
         resetPassword.rejected,
         dashboardStats.rejected,
+        listCollections.rejected,
+        usersList.rejected,
+        manageUser.rejected,
+        roles.rejected,
         ),
         (state, action) => {
           state.loading = false;

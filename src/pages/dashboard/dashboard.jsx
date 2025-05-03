@@ -4,6 +4,9 @@ import luthLogo from "../../assets/luthLogo.svg";
 import { useSelector } from "react-redux";
 import SignOut from "../auth pages/signOut";
 import { Link } from "react-router-dom";
+import Collections from "./collections";
+import Settings from "./settings";
+import Users from "./manageUsers";
 
 const Dashboard = () => {
 
@@ -22,11 +25,10 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 h-screen pt-[70px]">
         <div className="lg:col-span-2 border-r border-r-lightGray/40 ps-8 pe-5 py-7 bg-white text-xs font-medium">
           <ul className="grid gap-6">
-            <li>Overview</li>
-            <li>Manage LUTH</li>
-            <li>Manage patients</li>
+            <li><Link to={"/dashboard"}>Overview</Link></li>
             <li>Settlements</li>
-            <li>Collections</li>
+            <li><Link to={"/dashboard/collections"}>Collections</Link></li>
+            <li><Link to={"/dashboard/settings"}>Settings</Link></li>
             <li>
               <Link to={"/sign-out"}>
                 sign out
@@ -37,7 +39,10 @@ const Dashboard = () => {
         <div className="lg:col-span-10 px-5 py-6">
             <Routes>
               <Route index element={<Overview />} />
-              {/* <Route path="create-account" element={<Registeruser />} /> */}
+              <Route path="collections" element={<Collections />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="manage-users" element={<Users />} />
+              
             </Routes>
         </div>
       </div>
