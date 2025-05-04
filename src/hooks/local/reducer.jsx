@@ -135,7 +135,6 @@ export const manageUser = createAsyncThunk(
       const manageUserEndpoint =
         await apiEndPoints.updateUser(userID);
       const response = await manageUserEndpoint.data;
-      // console.log(response, "akdfjlkjdfs")
       return response;
     } catch (error) {
       return error.response.data;
@@ -158,9 +157,50 @@ export const listCollections = createAsyncThunk(
   }
 );
 
+export const endOfDaySummary = createAsyncThunk(
+  "user/EOD",
+  async () => {
+    try {
+      const endOfDayEndPoint =
+        await apiEndPoints.endOfDaySummary();
+      const response = await endOfDayEndPoint.data;
+      // console.log(response)
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
 
+export const settlements = createAsyncThunk(
+  "user/settlementDetails",
+  async () => {
+    try {
+      const settlementEndPoint =
+        await apiEndPoints.settlementDetails();
+      const response = await settlementEndPoint.data;
+      // console.log(response)
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
 
-
+export const partnerSettlementDetails = createAsyncThunk(
+  "user/partnerSettlementDetails",
+  async () => {
+    try {
+      const partnerSettlementEndPoint =
+        await apiEndPoints.partnerSettlement();
+      const response = await partnerSettlementEndPoint.data;
+      // console.log(response)
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
 
 
 const slice = createSlice({
@@ -203,6 +243,9 @@ const slice = createSlice({
           usersList.fulfilled,
           manageUser.fulfilled,
           roles.fulfilled,
+          endOfDaySummary.fulfilled,
+          settlements.fulfilled,
+          partnerSettlementDetails.fulfilled,
         ),
         (state, action) => {
           state.loading = false;
@@ -241,6 +284,9 @@ const slice = createSlice({
         usersList.pending,
         manageUser.pending,
         roles.pending,
+        endOfDaySummary.pending,
+        settlements.pending,
+        partnerSettlementDetails.pending
         ),
         (state) => {
           state.loading = true;
@@ -259,6 +305,9 @@ const slice = createSlice({
         usersList.rejected,
         manageUser.rejected,
         roles.rejected,
+        endOfDaySummary.rejected,
+        settlements.rejected,
+        partnerSettlementDetails.rejected
         ),
         (state, action) => {
           state.loading = false;

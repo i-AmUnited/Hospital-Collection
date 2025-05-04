@@ -1,62 +1,59 @@
 import { useState } from "react";
-import { useCollections, useEndOfDaySummary } from "../reuseableEffects";
+import {usePartnerSettlementDetails, useSettlementDetails } from "../reuseableEffects";
 import InputComp from "../../components/inputComp";
 
-const Collections = () => {
-  const collections = useCollections();
-  const endOfDaySummary = useEndOfDaySummary();
-  // console.log(collections);
+const Settlements = () => {
+  const settlementDetails = useSettlementDetails();
+  const partnerSettlement = usePartnerSettlementDetails();
+//   console.log(partnerSettlement);
 
   const [activeTab, setActiveTab] = useState("tabOne");
   const [ tabOne, setTabOne] = useState(true)
   const [ tabTwo, setTabTwo] = useState(false)
-  const [ tabThree, setTabThree] = useState(false)
 
   const openTabOne = () => {
     setTabOne(true);
     setTabTwo(false);
-    setTabThree(false);
     setActiveTab("tabOne")
   };
   
   const openTabTwo = () => {
     setTabOne(false);
     setTabTwo(true);
-    setTabThree(false);
     setActiveTab("tabTwo")
   };
   
-  const openTabThree = () => {
-    setTabOne(false);
-    setTabTwo(false);
-    setTabThree(true);
-    setActiveTab("tabThree")
-  };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [eodsearchQuery, setEodSearchQuery] = useState("");
+  const [searchSettlementQuery, setSearchSettlementQuery] = useState("");
+  const [partnerSettlementsearchQuery, setpartnerSettlementSearchQuery] = useState("");
 
-  const filteredCollections = collections.filter((entry) =>
+  const filteredsettlements = settlementDetails.filter((entry) =>
     Object.values(entry).some((value) =>
-      (value ?? '').toString().toLowerCase().includes(searchQuery.toLowerCase())
+      (value ?? '').toString().toLowerCase().includes(searchSettlementQuery.toLowerCase())
     )
   );
 
-  const filteredEOD = endOfDaySummary.filter((entry) =>
-    Object.values(entry).some((value) =>
-      (value ?? '').toString().toLowerCase().includes(eodsearchQuery.toLowerCase())
-    )
-  );
+  const filteredPartnerSettlement = partnerSettlement.filter((entry) => {
+    // Combine top-level values and nested merchantAccount values
+    const combinedValues = {
+      ...entry,
+      ...(entry.merchantAccount || {}) // avoid error if merchantAccount is undefined
+    };
+  
+    return Object.values(combinedValues).some((value) =>
+      (value ?? '').toString().toLowerCase().includes(partnerSettlementsearchQuery.toLowerCase())
+    );
+  });
+  
   
 
   return (
     <div>
-      <div className="font-extrabold">Collections</div>
+      <div className="font-extrabold">Settlements</div>
       <div className="overflow-x-auto whitespace-nowrap">
               <div className="flex text-xs bg-white border border-lightGray/40 text-lightGray rounded py-3 w-fit divide-x my-5">
-                <span className={`${activeTab === "tabOne" ? "text-primary font-semibold" : ""} px-4 cursor-pointer`} onClick={openTabOne}> Collection details summary </span>
-                <span className={`${activeTab === "tabTwo" ? "text-primary font-semibold" : ""} px-4 cursor-pointer`} onClick={openTabTwo}> Bank transfer collections </span>
-                <span className={`${activeTab === "tabThree" ? "text-primary font-semibold" : ""} px-4 cursor-pointer`} onClick={openTabThree}> End of day summary </span>
+                <span className={`${activeTab === "tabOne" ? "text-primary font-semibold" : ""} px-4 cursor-pointer`} onClick={openTabOne}> Settlement details </span>
+                <span className={`${activeTab === "tabTwo" ? "text-primary font-semibold" : ""} px-4 cursor-pointer`} onClick={openTabTwo}> Partner settlement summary </span>
               </div>
       </div>
 
@@ -66,8 +63,8 @@ const Collections = () => {
           <InputComp
             type={"text"}
             placeholder={"Search by any field..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchSettlementQuery}
+            onChange={(e) => setSearchSettlementQuery(e.target.value)}
           />
         </div>
         <div className="grid grid-cols-1 whitespace-nowrap overflow-x-auto border border-lightGray/24 rounded-md">
@@ -89,14 +86,14 @@ const Collections = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredCollections.length === 0 ? (
+              {filteredsettlements.length === 0 ? (
                 <tr>
                   <td colSpan="12" className="text-center py-6">
                     No matching records found.
                   </td>
                 </tr>
               ) : (
-                filteredCollections.map((row, index) => (
+                filteredsettlements.map((row, index) => (
                   <tr key={index} className="hover:bg-[#c4c4c416] transition duration-500 text-xs font-medium">
                     <td className="py-4 ps-6 pe-2 sticky left-0 bg-white z-10">{index + 1}</td>
                     <td className="py-4 ps-4">{row.invoiceNo}</td>
@@ -119,18 +116,14 @@ const Collections = () => {
       </div>)
       }
 
-      { tabTwo && (
-        <div>tab 2</div>
-      )}
-
-{ tabThree && (
+{ tabTwo && (
         <div>
         <div className="mb-3 w-full md:w-2/3 lg:w-1/3">
           <InputComp
             type={"text"}
             placeholder={"Search by any field..."}
-            value={searchQuery}
-            onChange={(e) => setEodSearchQuery(e.target.value)}
+            value={partnerSettlementsearchQuery}
+            onChange={(e) => setpartnerSettlementSearchQuery(e.target.value)}
           />
         </div>
         <div className="grid grid-cols-1 whitespace-nowrap overflow-x-auto border border-lightGray/24 rounded-md">
@@ -138,27 +131,37 @@ const Collections = () => {
             <thead className="border-b border-lightGray/24 bg-lightGray/20 text-xs">
               <tr>
                 <th className="ps-6 pe-2 py-[18px] bg-white sticky left-0 z-10">No.</th>
-                <th className="ps-4 pe-6 py-[18px]">Merchant account</th>
+                <th className="ps-4 pe-6 py-[18px]">Processing date</th>
+                <th className="px-6 py-[18px]">Settlement date</th>
+                <th className="px-6 py-[18px]">Beneficiary name</th>
+                <th className="px-6 py-[18px]">Account number</th>
+                <th className="px-6 py-[18px]">Bank name</th>
+                <th className="px-6 py-[18px]">RRR</th>
                 <th className="px-6 py-[18px]">Total amount</th>
-                <th className="px-6 py-[18px]">Transaction count</th>
                 <th className="px-6 py-[18px]">Status</th>
+                <th className="px-6 py-[18px]">Processing error</th>
               </tr>
             </thead>
             <tbody>
-              {filteredEOD.length === 0 ? (
+              {filteredPartnerSettlement.length === 0 ? (
                 <tr>
                   <td colSpan="12" className="text-center py-6">
                     No matching records found.
                   </td>
                 </tr>
               ) : (
-                filteredEOD.map((row, index) => (
+                filteredPartnerSettlement.map((row, index) => (
                   <tr key={index} className="hover:bg-[#c4c4c416] transition duration-500 text-xs font-medium">
                     <td className="py-4 ps-6 pe-2 sticky left-0 bg-white z-10">{index + 1}</td>
-                    <td className="py-4 ps-4  max-w-[300px] truncate">{row.merchantAccount}</td>
-                    <td className="py-4 px-6 truncate">{row.totalAmount}</td>
-                    <td className="py-4 ps-6">{row.transactionCount}</td>
+                    <td className="py-4 ps-4  max-w-[300px] truncate">{row.processingDate}</td>
+                    <td className="py-4 px-6 truncate">{row.settlementDate}</td>
+                    <td className="py-4 ps-6">{row.merchantAccount?.beneficiaryName}</td>
+                    <td className="py-4 ps-6">{row.merchantAccount?.accountNumber}</td>
+                    <td className="py-4 ps-6">{row.merchantAccount?.bankName}</td>
+                    <td className="py-4 ps-6">{row.rrr}</td>
+                    <td className="py-4 ps-6">{row.totalAmount}</td>
                     <td className="py-4 ps-6">{row.status}</td>
+                    <td className="py-4 ps-6">{row.processingError}</td>
                   </tr>
                 ))
               )}
@@ -171,4 +174,4 @@ const Collections = () => {
   );
 };
 
-export default Collections;
+export default Settlements;

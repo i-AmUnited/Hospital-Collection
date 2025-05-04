@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CryptoJS from "crypto-js";
 
 export const base_url = 'https://api.macrotech.com.ng/api/v1';
+export const alternate_base_url = 'http://95.111.241.7:3100/notifications';
 
 export const showSuccessMessage = (message) => {
     toast.success(message);

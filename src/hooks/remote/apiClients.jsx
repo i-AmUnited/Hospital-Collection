@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { APP_SECRET_KEY, base_url } from "../constants";
+import { alternate_base_url, APP_SECRET_KEY, base_url } from "../constants";
 import CryptoJS from "crypto-js";
 
 export const apiClient = Axios.create(
@@ -16,6 +16,13 @@ export const apiClientWithToken = Axios.create(
     }
 )
 
+export const alternateapiClientWithToken = Axios.create(
+  {
+      baseURL: alternate_base_url,
+      headers: { "Content-Type": "application/json" },
+  }
+)
+
 apiClientWithToken.interceptors.request.use(
     (config) => {
         const decryptedData = CryptoJS.AES.decrypt(localStorage.getItem("token"), APP_SECRET_KEY).toString(CryptoJS.enc.Utf8);
@@ -28,4 +35,18 @@ apiClientWithToken.interceptors.request.use(
       (error) => {
         return Promise.reject(error);
       },
+)
+
+alternateapiClientWithToken.interceptors.request.use(
+  (config) => {
+      const decryptedData = CryptoJS.AES.decrypt(localStorage.getItem("token"), APP_SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      const parsedData = JSON.parse(decryptedData); 
+      if (parsedData) {
+        config.headers["Authorization"] = `Bearer ${parsedData}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
 )

@@ -76,6 +76,33 @@ export class apiEndPoints {
     }
   }
 
+  static async endOfDaySummary() {
+    try {
+      return apiClientWithToken.get("/settlements/merchant-aggregates");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async settlementDetails() {
+    try {
+      return apiClientWithToken.get("/settlements/getSettlements");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async partnerSettlement() {
+    try {
+      return apiClientWithToken.get("/merchant-bank-account-settlement/get-settlement-report");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
   static async listUsers() {
     try {
       return apiClientWithToken.get("/users");
