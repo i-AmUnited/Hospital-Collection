@@ -8,144 +8,12 @@ const Collections = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const collections = [
-  //   {
-  //     invoiceNo: "INV001",
-  //     description: "General Consultation",
-  //     invoiceDate: "2025-04-01",
-  //     item: "Consultation",
-  //     payerName: "John Doe",
-  //     amount: 5000,
-  //     total: 5000,
-  //     debited: true,
-  //     channel: "POS",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "Successful"
-  //   },
-  //   {
-  //     invoiceNo: "INV002",
-  //     description: "X-Ray Scan",
-  //     invoiceDate: "2025-04-02",
-  //     item: "Radiology",
-  //     payerName: "Jane Smith",
-  //     amount: 8500,
-  //     total: 8500,
-  //     debited: false,
-  //     channel: "Cash",
-  //     notificationStatus: "Pending",
-  //     posPaymentStatus: "N/A"
-  //   },
-  //   {
-  //     invoiceNo: "INV003",
-  //     description: "Blood Test",
-  //     invoiceDate: "2025-04-03",
-  //     item: "Laboratory",
-  //     payerName: "Samuel Johnson",
-  //     amount: 3000,
-  //     total: 3000,
-  //     debited: true,
-  //     channel: "Transfer",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "N/A"
-  //   },
-  //   {
-  //     invoiceNo: "INV004",
-  //     description: "MRI Scan",
-  //     invoiceDate: "2025-04-04",
-  //     item: "Radiology",
-  //     payerName: "Fatima Ali",
-  //     amount: 20000,
-  //     total: 20000,
-  //     debited: false,
-  //     channel: "POS",
-  //     notificationStatus: "Failed",
-  //     posPaymentStatus: "Declined"
-  //   },
-  //   {
-  //     invoiceNo: "INV005",
-  //     description: "Surgery Charges",
-  //     invoiceDate: "2025-04-05",
-  //     item: "Surgery",
-  //     payerName: "Ahmed Musa",
-  //     amount: 150000,
-  //     total: 150000,
-  //     debited: true,
-  //     channel: "Transfer",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "N/A"
-  //   },
-  //   {
-  //     invoiceNo: "INV006",
-  //     description: "Admission Fee",
-  //     invoiceDate: "2025-04-06",
-  //     item: "Admission",
-  //     payerName: "Chinwe Okafor",
-  //     amount: 10000,
-  //     total: 10000,
-  //     debited: true,
-  //     channel: "POS",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "Successful"
-  //   },
-  //   {
-  //     invoiceNo: "INV007",
-  //     description: "Medication Purchase",
-  //     invoiceDate: "2025-04-07",
-  //     item: "Pharmacy",
-  //     payerName: "Ibrahim Lawal",
-  //     amount: 6200,
-  //     total: 6200,
-  //     debited: false,
-  //     channel: "Cash",
-  //     notificationStatus: "Pending",
-  //     posPaymentStatus: "N/A"
-  //   },
-  //   {
-  //     invoiceNo: "INV008",
-  //     description: "Dental Checkup",
-  //     invoiceDate: "2025-04-08",
-  //     item: "Dental",
-  //     payerName: "Maryam Bello",
-  //     amount: 7000,
-  //     total: 7000,
-  //     debited: true,
-  //     channel: "POS",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "Successful"
-  //   },
-  //   {
-  //     invoiceNo: "INV009",
-  //     description: "Physiotherapy Session",
-  //     invoiceDate: "2025-04-09",
-  //     item: "Physiotherapy",
-  //     payerName: "Kelvin Uche",
-  //     amount: 4500,
-  //     total: 4500,
-  //     debited: false,
-  //     channel: "Transfer",
-  //     notificationStatus: "Failed",
-  //     posPaymentStatus: "N/A"
-  //   },
-  //   {
-  //     invoiceNo: "INV010",
-  //     description: "Delivery Charges",
-  //     invoiceDate: "2025-04-10",
-  //     item: "Maternity",
-  //     payerName: "Amina Sule",
-  //     amount: 30000,
-  //     total: 30000,
-  //     debited: true,
-  //     channel: "POS",
-  //     notificationStatus: "Sent",
-  //     posPaymentStatus: "Successful"
-  //   }
-  // ];
-
   const filteredCollections = collections.filter((entry) =>
     Object.values(entry).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      (value ?? '').toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
+  
 
   return (
     <div>
@@ -191,14 +59,14 @@ const Collections = () => {
                   <td className="py-4 ps-4">{row.invoiceNo}</td>
                   <td className="py-4 px-6 truncate">{row.invoiceDescription}</td>
                   <td className="py-4 ps-6">{row.invoiceDate}</td>
-                  <td className="py-4 ps-6">{row.invoiceItems}</td>
+                  <td className="py-4 ps-6 max-w-[300px] truncate">{row.invoiceItems}</td>
                   <td className="py-4 ps-6">{row.invoicePayerName}</td>
                   <td className="py-4 ps-6">{row.invoiceAmount}</td>
                   <td className="py-4 ps-6">{row.invoiceTotalPayable}</td>
                   <td className="py-4 ps-6">{row.amountDebited}</td>
                   <td className="py-4 ps-6">{row.channel}</td>
-                  <td className="py-4 ps-6">{row.notificationCode === "00" ? "success" : "failed"}</td>
-                  <td className="py-4 ps-6">.</td>
+                  <td className="py-4 ps-6">{row.notificationStatus}</td>
+                  <td className="py-4 px-6">{row.invoicePOSPaymentStatus}</td>
                 </tr>
               ))
             )}
