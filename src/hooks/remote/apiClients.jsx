@@ -16,7 +16,7 @@ export const apiClientWithToken = Axios.create(
     }
 )
 
-export const alternateapiClientWithToken = Axios.create(
+export const alternateapiClient = Axios.create(
   {
       baseURL: alternate_base_url,
       headers: { "Content-Type": "application/json" },
@@ -35,18 +35,4 @@ apiClientWithToken.interceptors.request.use(
       (error) => {
         return Promise.reject(error);
       },
-)
-
-alternateapiClientWithToken.interceptors.request.use(
-  (config) => {
-      const decryptedData = CryptoJS.AES.decrypt(localStorage.getItem("token"), APP_SECRET_KEY).toString(CryptoJS.enc.Utf8);
-      const parsedData = JSON.parse(decryptedData); 
-      if (parsedData) {
-        config.headers["Authorization"] = `Bearer ${parsedData}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    },
 )

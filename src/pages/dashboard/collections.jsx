@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useCollections, useEndOfDaySummary } from "../reuseableEffects";
+import { useBankTransferCollections, useCollections, useEndOfDaySummary } from "../reuseableEffects";
 import InputComp from "../../components/inputComp";
 
 const Collections = () => {
   const collections = useCollections();
   const endOfDaySummary = useEndOfDaySummary();
-  // console.log(collections);
+  const bankCollections = useBankTransferCollections();
+  // console.log(bankCollections);
 
   const [activeTab, setActiveTab] = useState("tabOne");
   const [ tabOne, setTabOne] = useState(true)
@@ -35,6 +36,7 @@ const Collections = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [eodsearchQuery, setEodSearchQuery] = useState("");
+  const [banksearchQuery, setBanksearchQuery] = useState("")
 
   const filteredCollections = collections.filter((entry) =>
     Object.values(entry).some((value) =>
@@ -45,6 +47,12 @@ const Collections = () => {
   const filteredEOD = endOfDaySummary.filter((entry) =>
     Object.values(entry).some((value) =>
       (value ?? '').toString().toLowerCase().includes(eodsearchQuery.toLowerCase())
+    )
+  );
+
+  const filteredBankCollections = bankCollections.filter((entry) =>
+    Object.values(entry).some((value) =>
+      (value ?? '').toString().toLowerCase().includes(banksearchQuery.toLowerCase())
     )
   );
   
@@ -120,7 +128,66 @@ const Collections = () => {
       }
 
       { tabTwo && (
-        <div>tab 2</div>
+        <div>
+        <div className="mb-3 w-full md:w-2/3 lg:w-1/3">
+          <InputComp
+            type={"text"}
+            placeholder={"Search by any field..."}
+            value={banksearchQuery}
+            onChange={(e) => setBanksearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-1 whitespace-nowrap overflow-x-auto border border-lightGray/24 rounded-md">
+          <table className="w-full text-sm text-left bg-white">
+            <thead className="border-b border-lightGray/24 bg-lightGray/20 text-xs">
+              <tr>
+                <th className="ps-6 pe-2 py-[18px] bg-white sticky left-0 z-10">No.</th>
+                <th className="ps-4 pe-6 py-[18px]">Transaction ref</th>
+                <th className="px-6 py-[18px]">Transaction description</th>
+                <th className="px-6 py-[18px]">Request ref</th>
+                <th className="px-6 py-[18px]">Transaction date</th>
+                <th className="px-6 py-[18px]">Customer reference</th>
+                <th className="px-6 py-[18px]">Amount</th>
+                <th className="px-6 py-[18px]">Payer name</th>
+                <th className="px-6 py-[18px]">Payer phone</th>
+                <th className="px-6 py-[18px]">Payer email</th>
+                <th className="px-6 py-[18px]">Provider</th>
+                <th className="px-6 py-[18px]">Status</th>
+                <th className="px-6 py-[18px]">Requester</th>
+                <th className="px-6 py-[18px]">Payment channel</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredBankCollections.length === 0 ? (
+                <tr>
+                  <td colSpan="12" className="text-center py-6">
+                    No matching records found.
+                  </td>
+                </tr>
+              ) : (
+                filteredBankCollections.map((row, index) => (
+                  <tr key={index} className="hover:bg-[#c4c4c416] transition duration-500 text-xs font-medium">
+                    <td className="py-4 ps-6 pe-2 sticky left-0 bg-white z-10">{index + 1}</td>
+                    <td className="py-4 ps-4">{row.transaction_ref}</td>
+                    <td className="py-4 px-6 truncate">{row.transaction_desc}</td>
+                    <td className="py-4 ps-6">{row.request_ref}</td>
+                    <td className="py-4 ps-6 max-w-[300px] truncate">{row.time_in}</td>
+                    <td className="py-4 ps-6">{row.customer_ref}</td>
+                    <td className="py-4 ps-6">{row.amount}</td>
+                    <td className="py-4 ps-6">{row.customer_surname} {row.customer_firstname === row.customer_surname ? "" : row.customer_surname}</td>
+                    <td className="py-4 ps-6">{row.customer_mobile_no}</td>
+                    <td className="py-4 ps-6">{row.customer_email}</td>
+                    <td className="py-4 ps-6">{row.provider}</td>
+                    <td className="py-4 px-6">{row.status}</td>
+                    <td className="py-4 px-6">{row.requester}</td>
+                    <td className="py-4 px-6">{row.transaction_type}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
       )}
 
 { tabThree && (
@@ -129,7 +196,7 @@ const Collections = () => {
           <InputComp
             type={"text"}
             placeholder={"Search by any field..."}
-            value={searchQuery}
+            value={eodsearchQuery}
             onChange={(e) => setEodSearchQuery(e.target.value)}
           />
         </div>

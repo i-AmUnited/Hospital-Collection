@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { dashboardStats, endOfDaySummary, listCollections, partnerSettlementDetails, roles, settlements, usersList } from "../hooks/local/reducer";
+import { bankCollections, dashboardStats, endOfDaySummary, listCollections, partnerSettlementDetails, roles, settlements, usersList } from "../hooks/local/reducer";
 
 export function useDashboardStats() {
     const [stats, setStats] = useState([])
@@ -118,7 +118,7 @@ export function useDashboardStats() {
       const fetchPartnerSettlements = async() => {
         try {
             const {payload} = await dispatch(partnerSettlementDetails());
-            // console.log(payload)
+            // console.log(payload.result.data)
             setPartnerSettlement(payload?.result?.data);
         }
         catch(e){}
@@ -127,4 +127,22 @@ export function useDashboardStats() {
     }, [dispatch]);
   
     return partnerSettlement;
+  }
+
+  export function useBankTransferCollections() {
+    const [bankTransferCollections, setBankTransferCollections] = useState([])
+    const dispatch = useDispatch();
+    useEffect(() => {
+      const fetchBankCollections = async() => {
+        try {
+            const {payload} = await dispatch(bankCollections());
+            // console.log(payload.result.data)
+            setBankTransferCollections(payload?.result);
+        }
+        catch(e){}
+      }
+      fetchBankCollections();
+    }, [dispatch]);
+  
+    return bankTransferCollections;
   }

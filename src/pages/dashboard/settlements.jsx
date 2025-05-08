@@ -5,7 +5,7 @@ import InputComp from "../../components/inputComp";
 const Settlements = () => {
   const settlementDetails = useSettlementDetails();
   const partnerSettlement = usePartnerSettlementDetails();
-//   console.log(partnerSettlement);
+  // console.log(settlementDetails[0].luthInvoiceNotifications[0].rrn);
 
   const [activeTab, setActiveTab] = useState("tabOne");
   const [ tabOne, setTabOne] = useState(true)
@@ -62,7 +62,7 @@ const Settlements = () => {
         <div className="mb-3 w-full md:w-2/3 lg:w-1/3">
           <InputComp
             type={"text"}
-            placeholder={"Search by any field..."}
+            placeholder={"Search by any invoice number..."}
             value={searchSettlementQuery}
             onChange={(e) => setSearchSettlementQuery(e.target.value)}
           />
@@ -74,6 +74,7 @@ const Settlements = () => {
                 <th className="ps-6 pe-2 py-[18px] bg-white sticky left-0 z-10">No.</th>
                 <th className="ps-4 pe-6 py-[18px]">Invoice number</th>
                 <th className="px-6 py-[18px]">Description</th>
+                <th className="px-6 py-[18px]">RRR number</th>
                 <th className="px-6 py-[18px]">Invoice date</th>
                 <th className="px-6 py-[18px]">Item</th>
                 <th className="px-6 py-[18px]">Payer name</th>
@@ -97,16 +98,17 @@ const Settlements = () => {
                   <tr key={index} className="hover:bg-[#c4c4c416] transition duration-500 text-xs font-medium">
                     <td className="py-4 ps-6 pe-2 sticky left-0 bg-white z-10">{index + 1}</td>
                     <td className="py-4 ps-4">{row.invoiceNo}</td>
-                    <td className="py-4 px-6 truncate">{row.invoiceDescription}</td>
-                    <td className="py-4 ps-6">{row.invoiceDate}</td>
-                    <td className="py-4 ps-6 max-w-[300px] truncate">{row.invoiceItems}</td>
-                    <td className="py-4 ps-6">{row.invoicePayerName}</td>
-                    <td className="py-4 ps-6">{row.invoiceAmount}</td>
-                    <td className="py-4 ps-6">{row.invoiceTotalPayable}</td>
-                    <td className="py-4 ps-6">{row.amountDebited}</td>
-                    <td className="py-4 ps-6">{row.channel}</td>
-                    <td className="py-4 ps-6">{row.notificationStatus}</td>
-                    <td className="py-4 px-6">{row.invoicePOSPaymentStatus}</td>
+                    <td className="py-4 px-6 truncate">{row.luthInvoiceNotifications[0].invoiceDescription}</td>
+                    <td className="py-4 px-6 truncate">{row.luthInvoiceNotifications[0].rrrNo}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].invoiceDate}</td>
+                    <td className="py-4 ps-6 max-w-[300px] truncate">{row.luthInvoiceNotifications[0].invoiceItems}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].invoicePayerName}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].invoiceAmount}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].invoiceTotalPayable}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].amountDebited}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].channel}</td>
+                    <td className="py-4 ps-6">{row.luthInvoiceNotifications[0].notificationStatus}</td>
+                    <td className="py-4 px-6">{row.luthInvoiceNotifications[0].invoicePOSPaymentStatus}</td>
                   </tr>
                 ))
               )}

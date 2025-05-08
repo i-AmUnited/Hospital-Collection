@@ -202,6 +202,21 @@ export const partnerSettlementDetails = createAsyncThunk(
   }
 );
 
+export const bankCollections = createAsyncThunk(
+  "user/bankCollections",
+  async () => {
+    try {
+      const bankCollectionsEndpoint =
+        await apiEndPoints.bankTransferCollection();
+      const response = await bankCollectionsEndpoint.data;
+      // console.log(response)
+      return response;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 
 const slice = createSlice({
   name: "user",
@@ -246,6 +261,7 @@ const slice = createSlice({
           endOfDaySummary.fulfilled,
           settlements.fulfilled,
           partnerSettlementDetails.fulfilled,
+          bankCollections.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -286,7 +302,8 @@ const slice = createSlice({
         roles.pending,
         endOfDaySummary.pending,
         settlements.pending,
-        partnerSettlementDetails.pending
+        partnerSettlementDetails.pending,
+        bankCollections.pending
         ),
         (state) => {
           state.loading = true;
@@ -307,7 +324,8 @@ const slice = createSlice({
         roles.rejected,
         endOfDaySummary.rejected,
         settlements.rejected,
-        partnerSettlementDetails.rejected
+        partnerSettlementDetails.rejected,
+        bankCollections.rejected
         ),
         (state, action) => {
           state.loading = false;

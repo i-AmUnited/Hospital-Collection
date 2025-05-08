@@ -1,5 +1,5 @@
-import { showErrorMessage } from "../constants";
-import { apiClient, apiClientWithToken } from "./apiClients";
+import { alternate_base_url, showErrorMessage } from "../constants";
+import { alternateapiClient, apiClient, apiClientWithToken } from "./apiClients";
 
 export class apiEndPoints {
   static extractError(error) {
@@ -97,6 +97,15 @@ export class apiEndPoints {
   static async partnerSettlement() {
     try {
       return apiClientWithToken.get("/merchant-bank-account-settlement/get-settlement-report");
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async bankTransferCollection() {
+    try {
+      return alternateapiClient.get("/all-payment-notifications");
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
